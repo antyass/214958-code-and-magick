@@ -2,10 +2,11 @@
 
 (function () {
   var setup = document.querySelector('.setup');
+  var form = setup.querySelector('.setup-wizard-form');
   var setupOpen = document.querySelector('.setup-open');
   var setupClose = setup.querySelector('.setup-close');
-  var setupUserName = setup.querySelector('.setup-user-name');
   var setupSubmit = setup.querySelector('.setup-submit');
+  var setupUserName = setup.querySelector('.setup-user-name');
   var dialogHandle = setup.querySelector('.setup-user-pic');
   var shopElement = setup.querySelector('.setup-artifacts-shop');
   var artifactsElement = setup.querySelector('.setup-artifacts');
@@ -62,9 +63,6 @@
 
   setupClose.addEventListener('click', closePopup);
   setupClose.addEventListener('keydown', closePopupEventHandler);
-
-  setupSubmit.addEventListener('click', closePopup);
-  setupSubmit.addEventListener('keydown', closePopup);
 
   dialogHandle.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
@@ -138,6 +136,18 @@
   artifactsElement.addEventListener('dragleave', function (evt) {
     evt.target.classList.remove(DROP_COLOR);
     evt.preventDefault();
+  });
+
+  form.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    setupSubmit.disabled = true;
+    window.backend.save(new FormData(form), function () {
+      setupSubmit.disabled = false;
+      closePopup();
+    }, function (errorMessage) {
+      setupSubmit.disabled = false;
+      window.util.errorHandler(errorMessage);
+    });
   });
 
 })();
