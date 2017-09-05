@@ -874,3 +874,14 @@ input[type=radio]:checked + .review-mark-label {
 .dropColor {
   background-color: yellow;
 }
+
+.error {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  font-size: 20px;
+  text-align: center;
+  background-color: red;
+  z-index: 1000;
+}
