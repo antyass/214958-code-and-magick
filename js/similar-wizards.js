@@ -1,6 +1,7 @@
 'use strict';
 
-(function () {
+window.wizards = (function () {
+
   /**
    * Объект-маг
    * @typedef {object} Wizard
@@ -9,30 +10,76 @@
    * @property {string} eyesColor - Цвет глаз
    */
 
+  var wizards = [];
+  var coatColor;
+  var eyesColor;
+
   /**
-   * Создаёт DOM-элемент на основе JS-объекта
-   * @param {Wizard} wizard
-   * @return {DocumentFragment}
+   * Получает и обновляет список волшебников
+   * @param {Array.<Wizard>} data
    */
-  var renderWizard = function (wizard) {
-    var wizardElement = similarWizardTemplate.cloneNode(true);
-
-    wizardElement.querySelector('.setup-similar-label').textContent = wizard.name;
-    wizardElement.querySelector('.wizard-coat').style.fill = wizard.colorCoat;
-    wizardElement.querySelector('.wizard-eyes').style.fill = wizard.colorEyes;
-
-    return wizardElement;
+  var successHandler = function (data) {
+    wizards = data;
+    updateWizards();
   };
 
-  var setup = document.querySelector('.setup');
-  var similarWizardTemplate = document.querySelector('#similar-wizard-template').content;
-  var similarList = document.querySelector('.setup-similar-list');
+  /**
+   * Обновляет список волшебников
+   */
+  var updateWizards = function () {
+    window.renderWizards.render(wizards.slice().sort(function (left, right) {
+      var rankDiff = getRank(right) - getRank(left);
+      if (rankDiff === 0) {
+        rankDiff = wizards.indexOf(left) - wizards.indexOf(right);
+      }
+      return rankDiff;
+    }));
+  };
 
-  var successHandler = function (wizards) {
-    var fragment = window.util.getFragment(wizards.slice(0, 4), renderWizard);
-    similarList.appendChild(fragment);
-    setup.querySelector('.setup-similar').classList.remove('hidden');
+  var refreshWizards = window.util.debounce(updateWizards);
+
+  /**
+   * Обрабатывает изменение цвета глаз волшебника
+   * @param {eyesColor} color
+   */
+  var eyesChangeHandler = function (color) {
+    eyesColor = color;
+    refreshWizards();
+  };
+
+  /**
+   * Обрабатывает изменение цвета плаща волшебника
+   * @param {coatColor} color
+   */
+  var coatChangeHandler = function (color) {
+    coatColor = color;
+    refreshWizards();
+  };
+
+  /**
+   * Ранжирует волшебников в соответствии с цветом плаща и глаз
+   * @param {Wizard} wizard
+   * @return {number}
+   */
+  var getRank = function (wizard) {
+    var rank = 0;
+
+    if (wizard.colorCoat === coatColor) {
+      rank += 2;
+    }
+
+    if (wizard.colorEyes === eyesColor) {
+      rank += 1;
+    }
+
+    return rank;
   };
 
   window.backend.load(successHandler, window.util.errorHandler);
+
+  return {
+    eyesChangeHandler: eyesChangeHandler,
+    coatChangeHandler: coatChangeHandler
+  };
+
 })();
