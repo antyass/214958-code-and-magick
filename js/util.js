@@ -6,6 +6,7 @@ window.util = (function () {
     ESC: 27,
     ENTER: 13
   };
+  var DEBOUNCE_INTERVAL = 500;
 
   /**
    * Обрабатывает событие нажатия клавиши escape
@@ -57,11 +58,28 @@ window.util = (function () {
     document.body.appendChild(node);
   };
 
+  /**
+   * «Устраняет дребезг» при частом вызове той функции, которую ей передают
+   * @param {Function} func
+   * @return {number}
+   */
+  var debounce = function (func) {
+    var lastTimeout;
+    return function () {
+      if (lastTimeout) {
+        window.clearTimeout(lastTimeout);
+      }
+      lastTimeout = window.setTimeout(func, DEBOUNCE_INTERVAL);
+      return lastTimeout;
+    };
+  };
+
   return {
     errorHandler: errorHandler,
     getFragment: getFragment,
     isEnterEvent: isEnterEvent,
-    isEscEvent: isEscEvent
+    isEscEvent: isEscEvent,
+    debounce: debounce
   };
 
 })();
