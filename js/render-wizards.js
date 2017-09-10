@@ -12,13 +12,17 @@ window.renderWizards = (function () {
    * @return {DocumentFragment}
    */
   var renderWizard = function (wizard) {
-    var wizardElement = similarWizardTemplate.cloneNode(true);
+    var element = similarWizardTemplate.cloneNode(true);
+    var wizardElement = element.querySelector('.wizard');
 
-    wizardElement.querySelector('.setup-similar-label').textContent = wizard.name;
-    wizardElement.querySelector('.wizard-coat').style.fill = wizard.colorCoat;
-    wizardElement.querySelector('.wizard-eyes').style.fill = wizard.colorEyes;
+    element.querySelector('.setup-similar-label').textContent = wizard.name;
+    element.querySelector('.wizard-coat').style.fill = wizard.colorCoat;
+    element.querySelector('.wizard-eyes').style.fill = wizard.colorEyes;
+    window.artifacts.openPopup(wizardElement, function () {
+      return renderWizardArtifacts(wizard);
+    });
 
-    return wizardElement;
+    return element;
   };
 
   /**
@@ -31,6 +35,27 @@ window.renderWizards = (function () {
     similarList.innerHTML = '';
     similarList.appendChild(fragment);
     setup.querySelector('.setup-similar').classList.remove('hidden');
+  };
+
+  var renderWizardArtifacts = function (wizard) {
+    var list = document.createElement('dl');
+
+    var artifacts = wizard.artifacts.map(function (it) {
+      var content = document.createElement('div');
+      var term = document.createElement('dt');
+      var description = document.createElement('dd');
+      term.textContent = it.name;
+      description.textContent = it.description;
+      content.appendChild(term);
+      content.appendChild(description);
+      return content;
+    });
+
+    artifacts.forEach(function (artifact) {
+      list.appendChild(artifact);
+    });
+
+    return list;
   };
 
   return {
