@@ -7,7 +7,7 @@
   var setupClose = setup.querySelector('.setup-close');
   var setupSubmit = setup.querySelector('.setup-submit');
   var setupUserName = setup.querySelector('.setup-user-name');
-  var dialogHandle = setup.querySelector('.setup-user-pic');
+  var dialogHandle = setup.querySelector('.upload');
   var shopElement = setup.querySelector('.setup-artifacts-shop');
   var artifactsElement = setup.querySelector('.setup-artifacts');
   var draggedItem = null;
@@ -71,10 +71,12 @@
       x: evt.clientX,
       y: evt.clientY
     };
+    var dragged = false;
 
     var mouseMoveEventHandler = function (moveEvt) {
       moveEvt.preventDefault();
 
+      dragged = true;
       var shift = {
         x: startCoords.x - moveEvt.clientX,
         y: startCoords.y - moveEvt.clientY,
@@ -91,6 +93,14 @@
 
     var mouseUpEventHandler = function (upEvt) {
       upEvt.preventDefault();
+
+      if (dragged) {
+        var clickPreventDefaultHandler = function (event) {
+          event.preventDefault();
+          dialogHandle.removeEventListener('click', clickPreventDefaultHandler);
+        };
+        dialogHandle.addEventListener('click', clickPreventDefaultHandler);
+      }
 
       document.removeEventListener('mousemove', mouseMoveEventHandler);
       document.removeEventListener('mouseup', mouseUpEventHandler);

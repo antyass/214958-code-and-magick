@@ -885,3 +885,24 @@ input[type=radio]:checked + .review-mark-label {
   background-color: red;
   z-index: 1000;
 }
+
+.wizard-artifacts-hide {
+  display: none;
+}
+
+.wizard-artifacts {
+  position: absolute;
+  font-size: 13px;
+  padding: 0 5px;
+  border-radius: 5px;
+  z-index: 100;
+  max-width: 450px;
+  background-color: #414342;
+  border: 2px solid black;
+}
+
+.wizard-artifacts dd {
+  margin-left: 10px;
+  font-size: 11px;
+  margin-bottom: 5px;
+}
