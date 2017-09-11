@@ -8,7 +8,7 @@ window.renderWizards = (function () {
 
   /**
    * Создаёт DOM-элемент на основе JS-объекта
-   * @param {Wizard} wizard
+   * @param {WizardData} wizard
    * @return {DocumentFragment}
    */
   var renderWizard = function (wizard) {
@@ -27,7 +27,7 @@ window.renderWizards = (function () {
 
   /**
    * Отрисовывает волшебников
-   * @param {Array.<Wizard>} data
+   * @param {Array.<WizardData>} data
    */
   var render = function (data) {
     var number = data.length > 4 ? 4 : data.length;
