@@ -1,22 +1,12 @@
 'use strict';
 
-window.wizards = (function () {
-
-  /**
-   * Объект-маг
-   * @typedef {object} Wizard
-   * @property {string} name - Имя волшебника
-   * @property {string} coatColor - Цвет мантии
-   * @property {string} eyesColor - Цвет глаз
-   */
+(function () {
 
   var wizards = [];
-  var coatColor;
-  var eyesColor;
 
   /**
    * Получает и обновляет список волшебников
-   * @param {Array.<Wizard>} data
+   * @param {Array.<WizardData>} data
    */
   var successHandler = function (data) {
     wizards = data;
@@ -39,47 +29,31 @@ window.wizards = (function () {
   var refreshWizards = window.util.debounce(updateWizards);
 
   /**
-   * Обрабатывает изменение цвета глаз волшебника
-   * @param {eyesColor} color
-   */
-  var eyesChangeHandler = function (color) {
-    eyesColor = color;
-    refreshWizards();
-  };
-
-  /**
-   * Обрабатывает изменение цвета плаща волшебника
-   * @param {coatColor} color
-   */
-  var coatChangeHandler = function (color) {
-    coatColor = color;
-    refreshWizards();
-  };
-
-  /**
    * Ранжирует волшебников в соответствии с цветом плаща и глаз
-   * @param {Wizard} wizard
+   * @param {WizardData} wizard
    * @return {number}
    */
   var getRank = function (wizard) {
     var rank = 0;
 
-    if (wizard.colorCoat === coatColor) {
+    if (wizard.colorCoat === window.myWizard.coatColor) {
       rank += 2;
     }
 
-    if (wizard.colorEyes === eyesColor) {
+    if (wizard.colorEyes === window.myWizard.eyesColor) {
       rank += 1;
     }
 
     return rank;
   };
 
-  window.backend.load(successHandler, window.util.errorHandler);
-
-  return {
-    eyesChangeHandler: eyesChangeHandler,
-    coatChangeHandler: coatChangeHandler
+  /**
+   * Позволяет обновить похожих волшебников при изменении волшебника
+   */
+  window.myWizard.onChange = function () {
+    refreshWizards();
   };
+
+  window.backend.load(successHandler, window.util.errorHandler);
 
 })();
